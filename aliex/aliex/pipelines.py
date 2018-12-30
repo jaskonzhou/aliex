@@ -17,10 +17,8 @@ class QtpjtPipeline(object):
 class AliexPipeline(object):
     def process_item(self, item, spider):
         line = '{}\n'.format(json.dumps(dict(item), ensure_ascii=False))
-        print(line)
         self.file.write(line)
         strname = item['name']
-        print(strname)
         thispic = item['picurl']
         trueurl = thispic
         localpath = r'E:\scrapy\aliex\aliex\jpg'
