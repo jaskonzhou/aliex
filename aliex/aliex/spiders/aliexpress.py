@@ -29,13 +29,11 @@ class AliexpressSpider(scrapy.Spider):
                 strname = it('div.right-block.util-clearfix > div > div.detail > h3 > a > span').text()
                 strid = it.attr('qrdata')
                 strid =re.findall(r"[|](.+?)[|]",strid)
-                print('strid',strid[0])
+                #print('strid',strid[0])
 
                 strprice = it('div.right-block.util-clearfix > div > div.info.infoprice > span > span.value').text()
                 stroder = it('div.right-block.util-clearfix > div > div.info.infoprice > div.rate-history > span.order-num > a > em').text()
-
-                print(strname)
-                print(strprice)
+                #print(strprice)
                 if(it.find('img').attr('src')):
                     strjpg = r"https:" + it.find('img').attr('src')
                 else:
@@ -48,15 +46,24 @@ class AliexpressSpider(scrapy.Spider):
                 yield item
         if not li_list:
                 return
-        pn = response.meta.get('pn',1)
+        pn = response.meta.get('pn', 1)
         pn +=1
-        if pn >5:
+        if pn > 3:
             return
-        req = response.follow('/{}.html?site=glo&SortType=total_tranpro_desc&needQuery=n&tag='.format(pn),
-                              callback = self.parse,
-                              meta = {'pn',pn}
-                              )
-        yield req
+
+        url = 'https://www.aliexpress.com/category/200003482/dresses/{}.html?site=glo&SortType=total_tranpro_desc&needQuery=n&tag='.format(pn)
+        print(url)
+        yield Request(url,callback=self.parse,dont_filter=True)
+        # pn = response.meta.get('pn',1)
+        # pn +=1
+        # if pn >5:
+        #     return
+        #
+        # req = response.follow('category/200003482/dresses/{}.html?site=glo&SortType=total_tranpro_desc&needQuery=n&tag='.format(pn),
+        #                       callback = self.parse,
+        #                       meta = {'pn':pn}
+        #                       )
+        # yield req
 #        strname = jpy('#list-items > li.list-item.list-item-first.util-clearfix.list-item-180 > div.right-block.util-clearfix > div > div.detail > h3 > a > span').text()
 
 
